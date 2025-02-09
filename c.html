@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mustang 1969 | Realistic Engine & NOS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #111;
+            color: white;
+            overflow: hidden;
+            transition: background 0.5s ease-in-out;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mustang-container {
+            position: relative;
+            width: 600px;
+            max-width: 90%;
+        }
+
+        .mustang-car {
+            width: 100%;
+            transition: transform 0.1s ease-in-out;
+        }
+
+        .smoke, .flames {
+            position: absolute;
+            width: 130%;
+            height: 130%;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .smoke {
+            background: url('https://raw.githubusercontent.com/roshanthakur8844/Car/main/output-onlinegiftools.gif') no-repeat center;
+            background-size: contain;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .flames {
+            bottom: -20px;
+            left: 50%;
+            width: 120px;
+            height: 60px;
+            background: url('https://raw.githubusercontent.com/roshanthakur8844/Car/main/flames.gif') no-repeat center;
+            background-size: cover;
+        }
+
+        .headlights, .brake-lights {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .headlights {
+            background: radial-gradient(circle, rgba(255, 255, 150, 0.8) 10%, rgba(255, 255, 150, 0) 80%);
+            top: 0;
+            left: 0;
+        }
+
+        .brake-lights {
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.8) 10%, rgba(255, 0, 0, 0) 80%);
+            bottom: 0;
+            left: 0;
+        }
+
+        .mustang-name {
+            font-size: 2rem;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            background: red;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.2s;
+            font-size: 1.2rem;
+            margin: 10px;
+            border: 2px solid white;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: yellow;
+            color: black;
+            transform: scale(1.05);
+            box-shadow: 0 0 10px red;
+        }
+
+        @keyframes engineShake {
+            0%, 100% { transform: translateX(0) rotate(0); }
+            25% { transform: translateX(-2px) rotate(-1deg); }
+            50% { transform: translateX(2px) rotate(1deg); }
+        }
+
+        @keyframes cameraShake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, -2px); }
+            75% { transform: translate(-1px, 1px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🔥 Mustang 1969 - Realistic Simulation</h1>
+        <p>Feel the Power of a Legendary Muscle Car!</p>
+        
+        <div class="mustang-container">
+            <div class="headlights" id="headlights"></div>
+            <div class="brake-lights" id="brakeLights"></div>
+            <img src="https://raw.githubusercontent.com/roshanthakur8844/Car/main/rear-of-the-year-69-mustang-gill-billington-removebg-preview.png" 
+                 alt="Mustang Car" class="mustang-car" id="mustang">
+            <div class="smoke" id="smoke"></div>
+            <div class="flames" id="flames"></div>
+        </div>
+
+        <div class="mustang-name" id="mustangName">Mustang 1969</div>
+
+        <div class="buttons">
+            <button class="btn" id="startButton">Start Engine</button>
+            <button class="btn" id="nosButton">Activate NOS</button>
+            <button class="btn" id="brakeButton">Apply Brakes</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let engineRunning = false;
+            let engineSound = new Audio("https://raw.githubusercontent.com/roshanthakur8844/Car/main/videoplayback%20(1).m4a");
+            let raceSound = new Audio("https://raw.githubusercontent.com/roshanthakur8844/Car/main/EXTREME%20revving%20of%20Ford%20Mustang%20GT.mp3");
+            let skidSound = new Audio("https://raw.githubusercontent.com/roshanthakur8844/Car/main/Tires%20screeching%20-%20NicK%20Day.mp3");
+            let brakeSound = new Audio("https://raw.githubusercontent.com/roshanthakur8844/Car/main/brake-sound.mp3");
+
+            document.getElementById("startButton").addEventListener("click", function () {
+                let mustang = document.getElementById("mustang");
+                let headlights = document.getElementById("headlights");
+                let mustangName = document.getElementById("mustangName");
+
+                if (!engineRunning) {
+                    engineSound.play();
+                    engineRunning = true;
+                    mustang.style.animation = "engineShake 0.5s ease-in-out";
+                    headlights.style.opacity = "1";
+                    mustangName.style.opacity = "0";  
+                    setTimeout(() => { mustang.style.animation = "none"; }, 500);
+                } else {
+                    engineSound.pause();
+                    engineSound.currentTime = 0;
+                    engineRunning = false;
+                    headlights.style.opacity = "0";
+                }
+            });
+
+            document.getElementById("nosButton").addEventListener("click", function () {
+                let flames = document.getElementById("flames");
+                let smoke = document.getElementById("smoke");
+
+                flames.style.opacity = "1";
+                smoke.style.opacity = "1";
+                document.body.style.animation = "cameraShake 0.3s infinite";
+
+                raceSound.play();
+                skidSound.play();
+
+                setTimeout(() => {
+                    flames.style.opacity = "0";
+                    smoke.style.opacity = "0";
+                    document.body.style.animation = "none";
+                }, 2000);
+            });
+
+            document.getElementById("brakeButton").addEventListener("click", function () {
+                let brakeLights = document.getElementById("brakeLights");
+                let headlights = document.getElementById("headlights");
+                let mustangName = document.getElementById("mustangName");
+
+                brakeLights.style.opacity = "1";
+                brakeSound.play();
+                headlights.style.opacity = "0"; 
+                mustangName.style.opacity = "1"; 
+
+                setTimeout(() => {
+                    brakeLights.style.opacity = "0";
+                }, 1000);
+            });
+        });
+    </script>
+
+</body>
+</html>
